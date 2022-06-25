@@ -166,11 +166,11 @@ async def subscribe(e2_client: E2Client, e2_node_id: str, trigger_type: MhoTrigg
                 )
             except Exception as e:
                 logging.error(f'control failure: {e.args}')
-            
-            ue_id = ue_data['ue_id']
-            serving_nci = ue_data['serving_nci']
-            target_nci = bytes_to_string(target_cgi.n_r_cgi.n_rcell_identity.value.value)
-            logging.info(f'control success: {ue_id} from {serving_nci} to {target_nci}')
+            else:      
+                ue_id = ue_data['ue_id']
+                serving_nci = ue_data['serving_nci']
+                target_nci = bytes_to_string(target_cgi.n_r_cgi.n_rcell_identity.value.value)
+                logging.info(f'control success: {ue_id} from {serving_nci} to {target_nci}')
 
 
 async def run(e2_client: E2Client, e2_node_id: str):
