@@ -1,0 +1,37 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: xapp-mho
+  name: xapp-mho
+  namespace: sdran
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: xapp-mho
+  template:
+    metadata:
+      labels:
+        app: xapp-mho
+      annotations:
+        proxy.onosproject.org/inject: "true"
+    spec:
+      containers:
+      - image: xapp-mho:dev
+        name: xapp-mho
+        # command: ['sleep']
+        # args: ["36000"]
+        command:
+        - python
+        - /opt/xapp-mho/main.py
+        volumeMounts:
+        - name: pki
+          mountPath: /etc/xapp-mho/pki
+          readOnly: true
+      volumes:
+      - name: pki
+        secret:
+          secretName: xapp-mho
+        
+
