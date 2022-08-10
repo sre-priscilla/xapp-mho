@@ -1,8 +1,21 @@
 from typing import List, Dict, Tuple
+from dataclasses import dataclass
+from typing_extensions import Self
 
-import ipdb
+import torch
 import numpy as np
 import pandas as pd
+
+@dataclass
+class Inputs:
+    X_cl_1: np.ndarray
+    X_cl_2: np.ndarray
+    X_ue: np.ndarray
+    A_cl: np.ndarray
+    A_ue: np.ndarray
+    
+    def as_list(self) -> List[np.ndarray]:
+        return [self.X_cl_1, self.X_cl_2, self.X_ue, self.A_cl, self.A_ue]
 
 
 class State:
@@ -57,19 +70,19 @@ class State:
         return self.C / np.tile(C_abs, self.M)
 
     @property
-    def inputs(self) -> Tuple[np.ndarray]:
+    def inputs(self) -> Inputs:
         C, R = self.C, self.R
         A_cl, A_ue = self.A_cl, self.A_ue
         N_1, M_1 = np.ones((self.N, 1)), np.ones((self.M, 1))
 
-        X_cl_1: np.ndarray = np.hstack((A_cl @ R @ M_1, R @ M_1))
-        X_cl_2: np.ndarray = np.hstack((A_ue @ R.T @ N_1, C @ M_1))
-        X_ue: np.ndarray = np.hstack((C.T @ N_1, R.T @ N_1))
+        X_cl_1 = np.hstack((A_cl @ R @ M_1, R @ M_1))
+        X_cl_2 = np.hstack((A_ue @ R.T @ N_1, C @ M_1))
+        X_ue = np.hstack((C.T @ N_1, R.T @ N_1))
 
-        return (X_cl_1, X_cl_2, X_ue)
+        return Inputs(X_cl_1, X_cl_2, X_ue, A_cl, A_ue)
 
     @property
-    def actions() -> List[np.ndarray]:
+    def actions() -> List:
         pass
 
     def attach_ue(self, ue_id: str, serving_cell: str, cell_metrics: Dict[str, int]):

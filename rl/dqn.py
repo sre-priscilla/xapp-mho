@@ -44,21 +44,22 @@ class DQN:
         self.loss_function = MSELoss()
 
     def action(self, state: State) -> np.ndarray:
-        actions: List[np.ndarray] = state.actions
+        actions: List[State] = state.actions
         if np.random.uniform() >= self.epsilon:
             return random.choice(actions)
         else:
-            q_values = [
-                self.gnn_online.forward(
-                    state.X_cl_1,
-                    state.X_cl_2,
-                    state.X_ue,
-                    state.A_cl,
-                    state.A_ue
-                )
+            actions_inputs: List[Tensor] = [
+                [
+                    torch.from_numpy(x.astype(np.float64))
+                    for x in action.inputs.as_list()
+                ]
                 for action in actions
             ]
-            return actions[torch.max(q_values)[1]]
+            q_values = np.array([
+                self.gnn_online.forward(*inputs).numpy()[0][0]
+                for inputs in actions_inputs
+            ])
+            return actions[q_values.argmax()]
 
 
 
