@@ -1,1 +1,4 @@
-onos-ric-sdk-python>=0.2.3
+numpy
+pandas
+pytorch
+onos-ric-sdk-python>=0.2.5

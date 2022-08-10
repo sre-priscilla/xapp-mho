@@ -1,0 +1,20 @@
+name: xapp-mho
+serviceType: deployment
+containers:
+  - name: xapp-mho
+    dev:
+      gitUrl: ""
+      image: sealos:5000/xapp-mho:env
+      shell: ""
+      workDir: ""
+      storageClass: ""
+      resources: null
+      persistentVolumeDirs: []
+      command: null
+      debug: null
+      hotReload: true
+      sync: null
+      env: []
+      portForward: []
+      patches:
+        - patch: '{"spec":{"template":{"metadata":{"annotations":{"proxy.onosproject.org/inject": "true"}}}}}'
